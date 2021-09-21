@@ -1,0 +1,115 @@
+swagger: "2.0"
+info:
+  description: "This is a sample for Cordapp"
+  version: "1.0.0"
+  title: "Cordapp Documentation"
+host: "petstore.swagger.io"
+basePath: "/v1"
+paths:
+  /reinsurance:
+    post:
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Reinsurance State"
+          description: "Allow to issue a transaction"
+          required: true
+          schema:
+            $ref: "#/definitions/ReinsuranceState"
+      responses:
+        "201":
+          $ref: "#/definitions/ApiResponse"
+
+  /reinsurance/approve:
+    post:
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Reinsurance State - Aprove"
+          description: "Allow to issue a transaction"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - "contractId"
+            properties:
+              contractId:
+                type: "string"
+      responses:
+        "200":
+          $ref: "#/definitions/ApiResponse"
+
+  /reinsurance/refuse:
+    post:
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "Reinsurance State - Refuse"
+          description: "Allow to issue a transaction"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - "contractId"
+            properties:
+              contractId:
+                type: "string"
+      responses:
+        "200":
+          $ref: "#/definitions/ApiResponse"
+
+definitions:
+  ReinsuranceState:
+    type: "object"
+    required:
+      - "issuer"
+      - "reinsurer"
+      - "register"
+      - "contractId"
+    properties:
+      issuer:
+        type: "string"
+        example: "X500Name"
+      reinsurer:
+        type: "string"
+        example: "X500Name"
+      register:
+        type: "string"
+        example: "X500Name"
+      contractId:
+        type: "string"
+  ApiResponse:
+    type: "object"
+    properties:
+      ledgerHashKey:
+        type: "string"
+      contractId:
+        type: "string"
+      message:
+        type: "string"
+      erros:
+        type: "object"
+        properties:
+          mesage:
+            type: "string"
+            example: "error mesage"
+          codigo:
+            type: "integer"
+            format: "int32"
+
+  ## https://editor.swagger.io/?_ga=2.76031125.1644392906.1632256268-2075325436.1632256268
