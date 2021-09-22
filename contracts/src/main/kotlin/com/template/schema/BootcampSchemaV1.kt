@@ -1,8 +1,11 @@
 package com.template.schema
 
 import com.template.model.Status
+import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.schemas.MappedSchema
 import net.corda.core.schemas.PersistentState
+import org.hibernate.annotations.Type
+import java.util.*
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
@@ -24,24 +27,28 @@ object BootcampSchemaV1 : MappedSchema(
         get() = "bootcamp.changelog-master";
 
     @Entity
-    @Table(name = "BOOTCAMP_DETAIL")
+    @Table(name = "bootcamp_detail")
     class PersistentDetails(
         @Column(name = "issuer")
-        val issuer: String,
+        var issuer: String,
 
         @Column(name = "reinsurer")
-        val reinsurer: String,
+        var reinsurer: String,
 
         @Column(name = "register")
-        val register: String,
+        var register: String,
 
         @Column(name = "contractId")
-        val contractId: String,
+        var contractId: String,
 
         @Column(name = "status")
-        val status: Status
+        var status: Status,
+
+        @Column(name = "Id")
+        @Type(type="uuid-char")
+        var uuid: UniqueIdentifier
 
     ): PersistentState() {
-        constructor() : this("", "", "", "", Status.WAITING_APPROVAL)
+        constructor() : this("", "", "", " ", Status.WAITING_APPROVAL, UniqueIdentifier())
     }
 }

@@ -1,3 +1,4 @@
+/*
 package com.template.contracts
 
 import com.template.model.Status
@@ -117,12 +118,5 @@ class ReinsuranceContractTest {
         }
     }
 
-        //"Um input" using (input.size==1)
-        //"Um output" using (output.size==1)
-        //"issuer do input precisa ser igual ao do output" using (input.single().issuer == output.single().issuer)
-        //"reinsurer do input precisa ser igual ao do output" using (input.single().reinsurer == output.single().reinsurer)
-        //"register do input precisa ser igual ao do output" using (input.single().register == output.single().register)
-        //"status precisa ser REFUSED" using (output.single().status == Status.REFUSED)
-        //"linearId permanece igual" using (input.single().linearId == output.single().linearId)
     }
-
+*/

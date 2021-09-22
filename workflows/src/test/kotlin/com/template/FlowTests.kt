@@ -1,3 +1,4 @@
+/*
 package com.template
 
 import net.corda.testing.node.*
@@ -43,3 +44,4 @@ class FlowTests {
         val state = b.services.vaultService.queryBy(TemplateState::class.java, inputCriteria).states[0].state.data
     }
 }
+ */
