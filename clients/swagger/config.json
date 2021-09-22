@@ -1,0 +1,6 @@
+{
+  "generateAliasAsModel": true,
+  "modelMutable": false,
+  "serviceInterface": true,
+  "swaggerAnnotations": true
+}

@@ -1,3 +1,8 @@
+plugins {
+    id("org.hidetake.swagger.generator") version "2.18.2"
+}
+
+
 apply plugin: 'org.springframework.boot'
 
 sourceSets {
@@ -21,6 +26,11 @@ dependencies {
     compile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     compile "org.apache.logging.log4j:log4j-web:${log4j_version}"
     compile "org.slf4j:jul-to-slf4j:$slf4j_version"
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.1.11'
+    swaggerCodegen group: 'org.openapitools', name: 'openapi-generator-cli', version: '5.2.1'
+    implementation group: 'com.squareup.moshi', name: 'moshi', version: '1.4.0'
+
 }
 
 
@@ -46,3 +56,18 @@ task runTemplateServer(type: JavaExec, dependsOn: assemble) {
     main = 'com.template.webserver.ServerKt'
     args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
+
+compileJava.options.encoding = 'UTF-8'
+sourceSets.main.java.srcDirs = ['build/swagger-code-reinsurance/src/main/kotlin']
+swaggerSources {
+    reinsurance {
+        inputFile = file('swagger/swagger.yaml')
+        code {
+            language = 'kotlin-spring'
+            templateDir=file('swagger/template/')
+            configFile = file('swagger/config.json')
+            components = ['models', 'apis']
+        }
+    }
+}
+compileKotlin.dependsOn generateSwaggerCode
