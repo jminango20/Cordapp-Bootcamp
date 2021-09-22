@@ -35,7 +35,7 @@ data class ReinsuranceState(val contractId: String,
                 this.register.name.toString(),
                 this.contractId,
                 this.status,
-                this.linearId
+                this.linearId.id
             )
 
             else-> throw IllegalArgumentException("Unrecognised schema $schema")
