@@ -15,7 +15,7 @@
             <column name="reinsurer" type="NVARCHAR(64)"/>
             <column name="register" type="NVARCHAR(64)"/>
             <column name="contractId" type="NVARCHAR(64)"/>
-            <column name="status" type="INTEGER"/>
+            <column name="status" type="VARBINARY"/>
             <column name="linear_id" type="VARCHAR(255)"/>
         </createTable>
         <addPrimaryKey columnNames="output_index, transaction_id"

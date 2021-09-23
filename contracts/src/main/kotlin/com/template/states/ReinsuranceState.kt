@@ -20,7 +20,7 @@ data class ReinsuranceState(val contractId: String,
                             val issuer: Party,
                             val reinsurer: Party,
                             val register: Party,
-                            val status: Status,
+                            val status: Enum<Status>,
                             override val participants: List<AbstractParty> = listOf(issuer,reinsurer,register),
                             override val linearId: UniqueIdentifier = UniqueIdentifier(contractId)
 

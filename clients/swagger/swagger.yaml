@@ -1,115 +1,266 @@
 swagger: "2.0"
 info:
-  description: "This is a sample for Cordapp"
-  version: "1.0.0"
-  title: "Cordapp Documentation"
-host: "petstore.swagger.io"
-basePath: "/v1"
+  title: Fluxo de aprovação de resseguros
+  version: 1.0.0
+  description: API para fluxo de aprovação de resseguros
+host: localhost
+basePath: /v1
+schemes:
+  - https
+
 paths:
   /reinsurance:
     post:
+      summary: Abre uma solicitação para aprovação de contrato de resseguro
       consumes:
-        - "application/json"
-        - "application/xml"
+        - application/json
       produces:
-        - "application/xml"
-        - "application/json"
+        - application/json
+      description: Este endpoint é usado para registrar uma solicitação para aprovação de um contrato de resseguro
       parameters:
-        - in: "body"
-          name: "Reinsurance State"
-          description: "Allow to issue a transaction"
+        - in: body
+          name: body
           required: true
+          description: Os dados para registro da solicitação.
           schema:
-            $ref: "#/definitions/ReinsuranceState"
+            $ref: '#/definitions/ReinsuranceRequest'
       responses:
-        "201":
-          $ref: "#/definitions/ApiResponse"
+        '201':
+          schema:
+            $ref: '#/definitions/ReinsuranceResponse'
+          description: Sua requisição foi bem sucedida.
+          examples:
+            application/json: {
+              "ledgerhashKey": "123e4567-e89b-12d3-a456-426614174000",
+              "contractId": "426614174000",
+              "message": "Registro inserido com sucesso",
+              "errors": []
+            }
+        '500':
+          schema:
+            $ref: '#/definitions/ReinsuranceResponse'
+          description: Houve um erro na sua requisição.
+          examples:
+            application/json: {
+              "ledgerhashKey": null,
+              "contractId": null,
+              "message": "Ocorreu um erro na transação.",
+              "errors": [
+                {
+                  "message": "O registrador não existe na rede.",
+                  "code": "party.notfound"
+                }
+              ]
+            }
+      tags:
+        - Solicitação de um novo contrato
+    get:
+      summary: Lista contratos com determinado status
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Este endpoint é usado para listagem de contratos com determinado status
+      parameters:
+        - in: query
+          name: status
+          required: true
+          description: O status que se deseja pesquisar
+          type: string
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/ListDetailResponse'
+          description: Sua requisição foi bem sucedida.
+          examples:
+            application/json: [{
+              "issuer": "O=PartyA,L=Sao Paulo,C=BR",
+              "reinsurer": "O=PartyB,L=Sao Paulo,C=BR",
+              "register": "O=PartyC,L=Sao Paulo,C=BR",
+              "ledgerhashKey": "123e4567-e89b-12d3-a456-426614174000",
+              "contractId": "426614174000",
+              "status": "APPROVED"
+            }]
 
-  /reinsurance/approve:
-    post:
-      consumes:
-        - "application/json"
-        - "application/xml"
-      produces:
-        - "application/xml"
-        - "application/json"
-      parameters:
-        - in: "body"
-          name: "Reinsurance State - Aprove"
-          description: "Allow to issue a transaction"
-          required: true
-          schema:
-            type: "object"
-            required:
-              - "contractId"
-            properties:
-              contractId:
-                type: "string"
-      responses:
-        "200":
-          $ref: "#/definitions/ApiResponse"
+        '500':
+          description: Caso aconteça algum erro interno.
+      tags:
+        - Detalhar Contrato
 
-  /reinsurance/refuse:
-    post:
+  /reinsurance/{id}:
+    patch:
+      summary: Aprova ou recusa uma solicitação de contrato de resseguro
       consumes:
-        - "application/json"
-        - "application/xml"
+        - application/json
       produces:
-        - "application/xml"
-        - "application/json"
+        - application/json
+      description: Este endpoint é usado para aprovar ou recusar uma solicitação de um contrato de resseguro
       parameters:
-        - in: "body"
-          name: "Reinsurance State - Refuse"
-          description: "Allow to issue a transaction"
+        - in: path
+          name: id
           required: true
+          description: O identificador do registro no ledger
+          type: string
+        - in: body
+          name: body
+          required: true
+          description: O novo status do contrato.
           schema:
-            type: "object"
-            required:
-              - "contractId"
-            properties:
-              contractId:
-                type: "string"
+            $ref: '#/definitions/StatusRequest'
       responses:
-        "200":
-          $ref: "#/definitions/ApiResponse"
+        '200':
+          schema:
+            $ref: '#/definitions/ReinsuranceResponse'
+          description: Sua requisição foi bem sucedida.
+          examples:
+            application/json: {
+              "ledgerHashKey": "123e4567-e89b-12d3-a456-426614174000",
+              "contractId": "426614174000",
+              "message": "Registro atualizado com sucesso",
+              "errors": []
+            }
+        '404':
+          schema:
+            $ref: '#/definitions/ReinsuranceResponse'
+          description: Ocorreu um erro na sua requisição.
+          examples:
+            application/json: {
+              "ledgerHashKey": null,
+              "contractId": null,
+              "message": "Ocorreu um erro na transação.",
+              "erros": [
+                {
+                  "message": "O registrador não existe na rede.",
+                  "code": "party.notfound"
+                }
+              ]
+            }
+      tags:
+        - Atualização de status
+    get:
+      summary: Detalha os valores de um contrato de resseguro
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Este endpoint é usado para detalhar um contrato de resseguro
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: O identificador do registro no ledger
+          type: string
+      responses:
+        '200':
+          schema:
+            $ref: '#/definitions/DetailResponse'
+          description: Sua requisição foi bem sucedida.
+          examples:
+            application/json: {
+              "issuer": "O=PartyA,L=Sao Paulo,C=BR",
+              "reinsurer": "O=PartyB,L=Sao Paulo,C=BR",
+              "register": "O=PartyC,L=Sao Paulo,C=BR",
+              "ledgerhashKey": "123e4567-e89b-12d3-a456-426614174000",
+              "contractId": "426614174000",
+              "status": "APPROVED"
+            }
+        '404':
+          description: Sua requisição foi bem sucedida.
+      tags:
+        - Detalhar Contrato
 
 definitions:
-  ReinsuranceState:
-    type: "object"
+  ReinsuranceResponse:
+    type: object
+    properties:
+      contractId:
+        type: string
+        example: "426614174000"
+        description: "O número do contrato de seguro."
+      ledgerHashKey:
+        type: string
+        example: "123e4567-e89b-12d3-a456-426614174000"
+        description: "A chave que representa o registro no ledger."
+      message:
+        type: string
+        example: "Registro inserido com sucesso."
+      errors:
+        type: array
+        description: "Lista de erros encontrados durante validação"
+        items:
+          $ref: '#/definitions/Error'
+  ReinsuranceRequest:
+    type: object
     required:
-      - "issuer"
-      - "reinsurer"
-      - "register"
-      - "contractId"
+      - issuer
+      - reinsurer
+      - contractId
+      - register
+    properties:
+      reinsurer:
+        type: string
+        description: "Legal Name do reinsurer."
+        example: "O=PartyB,L=Sao Paulo,C=BR"
+      register:
+        type: string
+        description: "Legal Name do register."
+        example: "O=PartyC,L=Sao Paulo,C=BR"
+      contractId:
+        type: string
+        example: "426614174000"
+        description: "O número do contrato de seguro."
+
+  StatusRequest:
+    type: object
+    required:
+      - status
+    properties:
+      status:
+        type: string
+        description: "O novo status do objeto"
+        example: "APPROVED"
+
+  DetailResponse:
+    type: object
     properties:
       issuer:
-        type: "string"
-        example: "X500Name"
+        type: string
+        description: "Legal Name do issuer."
+        example: "O=PartyA,L=Sao Paulo,C=BR"
       reinsurer:
-        type: "string"
-        example: "X500Name"
+        type: string
+        description: "Legal Name do reinsurer."
+        example: "O=PartyB,L=Sao Paulo,C=BR"
       register:
-        type: "string"
-        example: "X500Name"
+        type: string
+        description: "Legal Name do register."
+        example: "O=PartyC,L=Sao Paulo,C=BR"
       contractId:
-        type: "string"
-  ApiResponse:
-    type: "object"
-    properties:
+        type: string
+        example: "426614174000"
+        description: "O número do contrato de seguro."
       ledgerHashKey:
-        type: "string"
-      contractId:
-        type: "string"
-      message:
-        type: "string"
-      erros:
-        type: "object"
-        properties:
-          mesage:
-            type: "string"
-            example: "error mesage"
-          codigo:
-            type: "integer"
-            format: "int32"
+        type: string
+        example: "123e4567-e89b-12d3-a456-426614174000"
+        description: "A chave que representa o registro no ledger."
+      status:
+        type: string
+        description: "O novo status do objeto"
+        example: "APPROVED"
 
-  ## https://editor.swagger.io/?_ga=2.76031125.1644392906.1632256268-2075325436.1632256268
+  ListDetailResponse:
+    type: array
+    items:
+      $ref: '#/definitions/DetailResponse'
+
+  Error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "Campo não preenchido"
+        description: "Descrição sobre o status do comando executado."
+      code:
+        type: string
+        example: 400
+        description: "O código representando a execução do comando."

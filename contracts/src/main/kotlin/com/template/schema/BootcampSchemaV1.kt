@@ -42,13 +42,13 @@ object BootcampSchemaV1 : MappedSchema(
         var contractId: String,
 
         @Column(name = "status")
-        var status: Status?,
+        var status: Enum<Status>,
 
         @Column(name = "linear_id")
         @Type(type="uuid-char")
         var uuid: UUID
 
     ): PersistentState() {
-        constructor() : this("", "", "", " ", null, UUID.randomUUID())
+        constructor() : this("", "", "", " ", Status.WAITING_APPROVAL, UUID.randomUUID())
     }
 }
