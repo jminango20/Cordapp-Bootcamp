@@ -11,16 +11,18 @@ import net.corda.core.identity.Party
 import net.corda.core.schemas.MappedSchema
 import net.corda.core.schemas.PersistentState
 import net.corda.core.schemas.QueryableState
+import net.corda.core.serialization.CordaSerializable
 
 // *********
 // * State *
 // *********
 @BelongsToContract(ReinsuranceContract::class)
+@CordaSerializable
 data class ReinsuranceState(val contractId: String,
                             val issuer: Party,
                             val reinsurer: Party,
                             val register: Party,
-                            val status: Enum<Status>,
+                            val status: Status,
                             override val participants: List<AbstractParty> = listOf(issuer,reinsurer,register),
                             override val linearId: UniqueIdentifier = UniqueIdentifier(contractId)
 

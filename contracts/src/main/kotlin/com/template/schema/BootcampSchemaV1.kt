@@ -29,22 +29,22 @@ object BootcampSchemaV1 : MappedSchema(
     @Entity
     @Table(name = "bootcamp_detail")
     class PersistentDetails(
-        @Column(name = "issuer")
+        @Column(name = "issuer", nullable = false)
         var issuer: String,
 
-        @Column(name = "reinsurer")
+        @Column(name = "reinsurer", nullable = false)
         var reinsurer: String,
 
-        @Column(name = "register")
+        @Column(name = "register", nullable = false)
         var register: String,
 
-        @Column(name = "contractId")
+        @Column(name = "contractId", nullable = false)
         var contractId: String,
 
-        @Column(name = "status")
-        var status: Enum<Status>,
+        @Column(name = "status", nullable = false)
+        var status: Status,
 
-        @Column(name = "linear_id")
+        @Column(name = "linear_id", nullable = false)
         @Type(type="uuid-char")
         var uuid: UUID
 

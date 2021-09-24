@@ -3,7 +3,7 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="Juan Minango" id="create_reinsurance_state">
+    <changeSet author="JuanMinango" id="create_reinsurance_state">
         <createTable tableName="bootcamp_detail">
             <column name="output_index" type="INT">
                 <constraints nullable="false"/>
@@ -14,13 +14,33 @@
             <column name="issuer" type="NVARCHAR(64)"/>
             <column name="reinsurer" type="NVARCHAR(64)"/>
             <column name="register" type="NVARCHAR(64)"/>
-            <column name="contractId" type="NVARCHAR(64)"/>
-            <column name="status" type="VARBINARY"/>
-            <column name="linear_id" type="VARCHAR(255)"/>
+            <column name="contractId" type="NVARCHAR(64)">
+                    <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INTEGER">
+                    <constraints nullable="false"/>
+            </column>
+            <column name="linear_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
+
         <addPrimaryKey columnNames="output_index, transaction_id"
                        constraintName="PK_reinsurance_states"
                        tableName="bootcamp_detail"/>
     </changeSet>
+
+    <changeSet id="index_contract_id" author="JuanMinango">
+        <createIndex tableName="bootcamp_detail" indexName="reinsurance_contract_id">
+            <column name="contractId"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="index_status" author="JuanMinango">
+        <createIndex tableName="bootcamp_detail" indexName="reinsurance_status">
+            <column name="status"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
 
