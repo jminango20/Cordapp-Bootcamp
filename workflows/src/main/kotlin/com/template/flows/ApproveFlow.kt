@@ -57,9 +57,10 @@ class ApproveFlow(val contractId: String) : FlowLogic<SignedTransaction>() {
         if (inputReinsuranceStateAndRef.isNotEmpty()) {
             val inputReinsuranceState = inputReinsuranceStateAndRef.single().state.data
 
-            // identidade do nó do register
+            // identidade do nó do reinsurer
             requireThat {
                 "You must be the reinsurer" using (inputReinsuranceState.reinsurer == ourIdentity)
+                //"You must be the reinsurer" using (inputReinsuranceStateAndRef.)
                 throw FlowException("You must be the reinsurer")
             }
 
@@ -100,6 +101,7 @@ class ApproveFlow(val contractId: String) : FlowLogic<SignedTransaction>() {
             throw FlowException("Contract  $contractId does not exist. Please create one")
         }
 }
+
 /*
 @InitiatedBy(CreateFlow::class)
 class ApproveFlowResponder(val flowSession: FlowSession): FlowLogic<SignedTransaction>() {

@@ -1,4 +1,3 @@
-/*
 package com.template.contracts
 
 import com.template.model.Status
@@ -8,12 +7,6 @@ import net.corda.testing.core.TestIdentity
 import net.corda.testing.node.MockServices
 import net.corda.testing.node.ledger
 import org.junit.Test
-import com.template.states.TemplateState
-import net.corda.core.contracts.Requirements.using
-import net.corda.core.contracts.UniqueIdentifier
-import net.corda.core.identity.AbstractParty
-import net.corda.core.identity.Party
-import net.corda.core.transactions.LedgerTransaction
 import java.util.*
 
 class ReinsuranceContractTest {
@@ -25,9 +18,6 @@ class ReinsuranceContractTest {
     //TESTE CREATE
     @Test
     fun create() {
-        //val inputState = ReinsuranceState("A", issuer.party, reinsurer.party, register.party, Status.APPROVED )
-        //val outputState = ReinsuranceState("A", issuer.party, reinsurer.party, register.party, Status.APPROVED )
-        //ZE-DANIEL
         val stateReinsuraceState = ReinsuranceState(UUID.randomUUID().toString(), issuer.party, reinsurer.party, register.party, Status.WAITING_APPROVAL)
 
         // Sem Input
@@ -96,15 +86,15 @@ class ReinsuranceContractTest {
     @Test
     fun reinsuranceContractVerifyRefusedTest(){
         val stateReinsuraceInput = ReinsuranceState(UUID.randomUUID().toString(), issuer.party, reinsurer.party, register.party, Status.WAITING_APPROVAL)
-        val stateReinsuraceOutput = stateReinsuraceInput.copy(status = Status.APPROVED) //Sofreo alteracao
+        val stateReinsuraceOutput = stateReinsuraceInput.copy(status = Status.REFUSED) //Sofreo alteracao
 
-        val commandApprove = ReinsuranceContract.Commands.Approve()
+        val commandRefuse = ReinsuranceContract.Commands.Refuse()
 
         ledgerServices.ledger {
             transaction {
                 //failing transaction pela falta de um Input
                 output(ReinsuranceContract.ID, stateReinsuraceOutput)
-                command(issuer.publicKey, commandApprove)
+                command(issuer.publicKey, commandRefuse)
                 fails()
             }
             //pass
@@ -112,11 +102,10 @@ class ReinsuranceContractTest {
                 //passing transaction
                 input(ReinsuranceContract.ID, stateReinsuraceInput)
                 output(ReinsuranceContract.ID, stateReinsuraceOutput)
-                command(issuer.publicKey, commandApprove)
+                command(issuer.publicKey, commandRefuse)
                 verifies()
             }
         }
     }
 
     }
-*/
